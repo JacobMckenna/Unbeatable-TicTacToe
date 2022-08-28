@@ -78,11 +78,11 @@ for x in range(3):
     for y in range(3):
         WINNING_VECTORS_MATRIX[x].append(preCalculateWinningVectorsAt(x,y))
 
-SQUARE_VALUE_MATRIX = [
-    [0.5,0.3,0.5],
-    [0.3,1.0,0.3],
-    [0.5,0.3,0.5]
-]
+# SQUARE_VALUE_MATRIX = [
+#     [0.5,0.3,0.5],
+#     [0.3,1.0,0.3],
+#     [0.5,0.3,0.5]
+# ]
 
 
 
