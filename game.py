@@ -3,10 +3,12 @@ import pygame
 import config
 import color
 import image
+from ai import Ai
 
 class Game():
     def __init__(self):
         self.board = Board()
+        self.ai = Ai()
         self.gameLoop = False
         self.window = pygame.display.set_mode((config.WINDOW_SIZE,config.WINDOW_SIZE))
         pygame.display.set_caption(config.WINDOW_NAME)
@@ -32,6 +34,7 @@ class Game():
         #end game
         self.gameLoop = False
 
+
     def play(self):
         # play game
         while self.gameLoop:
@@ -44,16 +47,14 @@ class Game():
                     for button in self.board.buttons:
                         if button.isOver():
                             #player move
-                            self.board.board[button.x][button.y] = config.PLAYER
-                            #removes button from being selected
-                            self.board.buttons.remove(button)
+                            self.board.claimSquare(button.x,button.y,config.PLAYER)
 
 
                             # ai move
                             if len(self.board.buttons):
                                 #if available buttons
-                                self.board.board[self.board.buttons[0].x][self.board.buttons[0].y] = config.AI
-                                self.board.buttons.remove(self.board.buttons[0])
+                                bestX,bestY = self.ai.getBestMove(self.board)
+                                self.board.claimSquare(bestX,bestY,config.AI)
             
                     # restart if no spaces
                     self.resetCheck()

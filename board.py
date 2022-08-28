@@ -9,6 +9,26 @@ class Board:
     def __init__(self):
         self.board = self.getEmptyBoard()
         self.buttons = self.getButtons()
+        self.availableMoves = self.getAvailableMoves()
+    
+    def claimSquare(self, x,y, player):
+        #player move
+        self.board[x][y] = player
+        #removes move from being available
+        self.availableMoves.remove((x,y))
+        #removes button from being selected
+        for button in self.buttons:
+            if button.x == x and button.y == y:
+                self.buttons.remove(button)
+                break
+    
+    def getAvailableMoves(self):
+        moves = []
+        for x in range(3):
+            for y in range(3):
+                if self.board[x][y] == 0:
+                    moves.append((x,y))
+        return moves
     
     def getButtons(self):
         buttons = []
