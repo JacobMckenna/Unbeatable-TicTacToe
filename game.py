@@ -14,14 +14,6 @@ class Game():
         pygame.display.set_caption(config.WINDOW_NAME)
         pygame.display.set_icon(image.ICON)
 
-    def resetCheck(self):
-        #
-        #   NEEDS MORE ADDED TO IT
-        #   eg. VICTORIES
-        #
-        if len(self.board.buttons) == 0:
-            self.reset()
-
     def start(self):
         # start game
         self.gameLoop = True
@@ -29,6 +21,10 @@ class Game():
     
     def reset(self):
         self.board = Board()
+
+        if config.STARTING_TURN == config.AI:
+            bestX,bestY = self.ai.getBestMove(self.board)
+            self.board.claimSquare(bestX,bestY,config.AI)
     
     def end(self):
         #end game
@@ -36,6 +32,8 @@ class Game():
 
 
     def play(self):
+        self.reset()
+
         # play game
         while self.gameLoop:
             for event in pygame.event.get():
@@ -55,9 +53,12 @@ class Game():
                                 #if available buttons
                                 bestX,bestY = self.ai.getBestMove(self.board)
                                 self.board.claimSquare(bestX,bestY,config.AI)
-            
-                    # restart if no spaces
-                    self.resetCheck()
+                        
+                            # ending
+                            outcome = self.board.evaluate()
+                            if outcome is not None:
+                                print(outcome,"has won")
+                                self.reset()
             
             
             #renders

@@ -2,6 +2,7 @@
 
 
 import image
+import config
 from button import Button
 
 
@@ -10,6 +11,26 @@ class Board:
         self.board = self.getEmptyBoard()
         self.buttons = self.getButtons()
         self.availableMoves = self.getAvailableMoves()
+    
+
+    def evaluate(self):
+        for vector in config.WINNING_VECTORS:
+            squares = []
+            for x,y in vector:
+                squares.append(self.board[x][y])
+            s = list(set(squares))
+            if len(s) is 1 and s[0] is not 0:
+                return s[0]   # return player or ai win
+            
+        
+        #checks if any winners or tie
+        if len(self.getAvailableMoves()) == 0:
+            return 0 #return tie
+        
+        # undecided ending
+        return None
+
+
     
     def claimSquare(self, x,y, player):
         #player move

@@ -68,6 +68,14 @@ WINDOW_NAME = "Tic Tac Toe"
 PLAYER = 1
 AI = 2
 
+ENDING_OUTCOME = {
+   PLAYER: -1,
+   0:0,
+   AI:1
+}
+
+STARTING_TURN = AI
+
 WINNING_VECTORS = preCalculateWinningVectors()
 WINNING_VECTORS_MATRIX = [      # contains 3x3 matrix of list of winning vectors for each square
     [],
