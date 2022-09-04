@@ -74,7 +74,7 @@ ENDING_OUTCOME = {
    AI:1
 }
 
-STARTING_TURN = AI
+STARTING_TURN = PLAYER
 
 WINNING_VECTORS = preCalculateWinningVectors()
 WINNING_VECTORS_MATRIX = [      # contains 3x3 matrix of list of winning vectors for each square
