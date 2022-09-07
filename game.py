@@ -22,9 +22,9 @@ class Game():
     def reset(self):
         self.board = Board()
 
-        if config.STARTING_TURN == config.AI:
-            bestX,bestY = self.ai.getBestMove(self.board)
-            self.board.claimSquare(bestX,bestY,config.AI)
+        # if config.STARTING_TURN == config.AI:
+        #     bestX,bestY = self.ai.getBestMove(self.board)
+        #     self.board.claimSquare(bestX,bestY,config.AI)
     
     def end(self):
         #end game
@@ -33,9 +33,26 @@ class Game():
 
     def play(self):
         self.reset()
+        # self.board.bitBoard |= 0b1010
+        # self.board.bitBoard |= 0b101 << 9
 
         # play game
         while self.gameLoop:
+            if (self.board.bitBoard&config.MASK_[config.TURN]) == 0:
+                # ai to place
+                # ai move
+                move = self.ai.getBestMove(self.board)
+                self.board.claimSquare(move)
+                
+                # ending
+                outcome = self.board.isTerminal()
+                if outcome is not None:
+                    print("\n---------------")
+                    print(config.OUTCOME_STR_[outcome],"has won!!")
+                    print("---------------\n")
+                    self.reset()
+
+
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -45,19 +62,15 @@ class Game():
                     for button in self.board.buttons:
                         if button.isOver():
                             #player move
-                            self.board.claimSquare(button.x,button.y,config.PLAYER)
+                            self.board.claimSquare(button.move)
 
 
-                            # ai move
-                            if len(self.board.buttons):
-                                #if available buttons
-                                bestX,bestY = self.ai.getBestMove(self.board)
-                                self.board.claimSquare(bestX,bestY,config.AI)
-                        
                             # ending
-                            outcome = self.board.evaluate()
+                            outcome = self.board.isTerminal()
                             if outcome is not None:
-                                print(outcome,"has won")
+                                print("\n---------------")
+                                print(config.OUTCOME_STR_[outcome],"has won!!")
+                                print("---------------\n")
                                 self.reset()
             
             

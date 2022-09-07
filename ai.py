@@ -1,5 +1,5 @@
 
-
+import time
 import config
 
 
@@ -8,29 +8,37 @@ class Ai:
         self.pruneCount = 0
         self.depthCount = 0
         self.searchCount = 0
+        self.ttCount = 0
+        self.transpositionTable = {}
 
     def getBestMove(self, board):
+        start_time = time.time()
         # returns best move
         bestScore = -300 #will always find a better score than -300
         #reset fun numbers
         self.pruneCount = 0
         self.depthCount = 0
         self.searchCount = 0
+        self.ttCount = 0
 
-        for x,y in board.availableMoves:
+        openSpots = board.getAvailableMoves()
+        for move in config.MOVES:
+            if (openSpots&move) > 0:
 
-            board.board[x][y] = config.AI
-            score = self.miniMax(board, -300, 300, 0, True)
-            board.board[x][y] = 0
+                board.claimSquare(move,temp=True)
+                score = self.miniMax(board, -300, 300, 0, True)
+                board.undo(move)
 
-            if score > bestScore:
-                bestScore = score
-                bestMove = (x,y)
-                print("best score:",bestScore)
+                if score > bestScore:
+                    bestScore = score
+                    bestMove = move
+                    #print("best score:",bestScore)
         
 
         self.printFunNum()
-        print("Best Move:", bestMove)
+        print("Best Move:", bin(bestMove))
+        print("Best Possible Ai Score:", bestScore)
+        print("Search Time: %s milliseconds" % ((time.time() - start_time)*1000))
         return bestMove
             
     
@@ -39,8 +47,15 @@ class Ai:
         # fun numbers
         self.depthCount = max(depth,self.depthCount)
 
+
+        if board.bitBoard in self.transpositionTable.keys():
+            # if found board in table
+            self.ttCount += 1
+            return self.transpositionTable[board.bitBoard]
+
+
         # runs minimax algorithm
-        outcome = board.evaluate()
+        outcome = board.isTerminal()
         if outcome is not None:
             return config.ENDING_OUTCOME[outcome]
 
@@ -48,30 +63,33 @@ class Ai:
         # not isMin = -300
         bestScore = -300 + (2*300*isMin)
 
-        for x,y in board.getAvailableMoves():
-            # fun boards searched
-            self.searchCount += 1
+        openSpots = board.getAvailableMoves()
+        for move in config.MOVES:
+            if (openSpots&move) > 0:
+                # fun boards searched
+                self.searchCount += 1
 
-            board.board[x][y] = 2-isMin
-            score = self.miniMax(board, alpha, beta, depth+1, not isMin)
-            board.board[x][y] = 0
+                board.claimSquare(move,temp=True)
+                score = self.miniMax(board, alpha, beta, depth+1, not isMin)
+                board.undo(move)
 
-            if isMin:
-                bestScore = min(bestScore, score)
+                if isMin:
+                    bestScore = min(bestScore, score)
+                    #alpha beta pruning
+                    beta = min(beta, score)
+                else:
+                    bestScore = max(bestScore, score)
+                    #alpha beta pruning
+                    alpha = max(alpha, score)
+                
                 #alpha beta pruning
-                beta = min(beta, score)
-            else:
-                bestScore = max(bestScore, score)
-                #alpha beta pruning
-                alpha = max(alpha, score)
-            
-            #alpha beta pruning
-            if beta <= alpha:
-                #fun numbers
-                self.pruneCount += 1
-                break
-
-
+                if beta <= alpha:
+                    #fun numbers
+                    self.pruneCount += 1
+                    break
+        
+        #adds board for lookup
+        self.transpositionTable.update({board.bitBoard:bestScore})
         return bestScore
     
     def printFunNum(self):
@@ -79,3 +97,5 @@ class Ai:
         print("Depth Reached:",self.depthCount)
         print("Prunes Made:", self.pruneCount)
         print("Boards Searched:",self.searchCount)
+        print("Boards Looked Up:", self.ttCount)
+

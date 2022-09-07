@@ -8,6 +8,7 @@ class Button:
         self.x = x
         self.y = y
         self.size = size
+        self.move = 0b1 << (self.x + self.y*3)
         self.pixelX = x*self.size+image.IMAGE_SIZE
         self.pixelY = y*self.size+image.IMAGE_SIZE
     

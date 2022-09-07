@@ -65,18 +65,67 @@ def preCalculateWinningVectorsAt(x,y):
 WINDOW_SIZE = image.IMAGE_SIZE*5
 WINDOW_NAME = "Tic Tac Toe"
 
-PLAYER = 1
-AI = 2
+PLAYER = 1 # x
+AI = 2     # o
+TURN = 3
+FULL = 4
+
+NUM_BITS = 32
+
+MASK_ = {
+    AI:     0b00000000000000000000000111111111,
+    PLAYER: 0b10000000000000111111111000000000,
+    TURN:   0b10000000000000000000000000000000, # 1 == player to place, 0 = AI to place
+    FULL:   0b111111111
+}
+
+EMPTY_BOARD = 0b10000000000000000000000000000000
+
+OUTCOME_STR_ = {
+    0: "No one",
+    PLAYER: "Player",
+    AI: "Ai"
+}
 
 ENDING_OUTCOME = {
    PLAYER: -1,
    0:0,
    AI:1
 }
+MOVE_IDX_ = {
+}
+for i in range(0):
+    MOVE_IDX_.update({0b1<<i:i})
 
-STARTING_TURN = PLAYER
+STARTING_TURN = AI
 
-WINNING_VECTORS = preCalculateWinningVectors()
+
+MOVES = [
+    # ordered from most likely to be good to least likely to be good
+    # for optimal efficient move
+    0b100000000,    # best first move if no other moves   - should be first since move 1 has longest run time
+    0b000010000,    # best 2nd move if other already played
+    0b001000000,
+    0b000000100,
+    0b000000001,
+    0b010000000,
+    0b000100000,
+    0b000001000,
+    0b000000010
+]
+
+
+# WINNING_VECTORS = preCalculateWinningVectors()
+WINNING_BITBOARDS = [
+    0b000000111,
+    0b000111000,
+    0b111000000,
+    0b100100100,
+    0b010010010,
+    0b001001001,
+    0b100010001,
+    0b001010100
+]
 WINNING_VECTORS_MATRIX = [      # contains 3x3 matrix of list of winning vectors for each square
     [],
     [],
