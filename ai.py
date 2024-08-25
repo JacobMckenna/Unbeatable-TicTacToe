@@ -53,11 +53,14 @@ class Ai:
             self.ttCount += 1
             return self.transpositionTable[board.bitBoard]
 
-
         # runs minimax algorithm
         outcome = board.isTerminal()
         if outcome is not None:
+            #adds board for lookup
+            self.transpositionTable.update({board.bitBoard:config.ENDING_OUTCOME[outcome]})
             return config.ENDING_OUTCOME[outcome]
+
+
 
         # isMin = 300
         # not isMin = -300
@@ -88,8 +91,6 @@ class Ai:
                     self.pruneCount += 1
                     break
         
-        #adds board for lookup
-        self.transpositionTable.update({board.bitBoard:bestScore})
         return bestScore
     
     def printFunNum(self):

@@ -87,17 +87,27 @@ OUTCOME_STR_ = {
     AI: "Ai"
 }
 
+SWAP_ = {
+    1:2,
+    2:1
+}
+
 ENDING_OUTCOME = {
    PLAYER: -1,
    0:0,
    AI:1
+}
+WIN_NAME = {
+    0:"Ties:",
+    1:"Wins:",
+    2:"Losses:"
 }
 MOVE_IDX_ = {
 }
 for i in range(0):
     MOVE_IDX_.update({0b1<<i:i})
 
-STARTING_TURN = AI
+STARTING_TURN = PLAYER
 
 
 MOVES = [
